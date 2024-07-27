@@ -24,12 +24,14 @@ Jianbin Wang is studying at the State Key Laboratory of Herbage Improvement and 
 At present, he mainly discusses the mechanism for the production, oxidation, transmission and release process of greenhouse gases in the alpine wetland ecosystems, especially during spring-thawing and autumn-freezing season.
 
 <br>
+
 # 🧐 Research Interests：
   - Climate Change;
   - Methane;
   - Seasonal Freezing and Thawing.
   
 <br>
+
 # 🎓 Education
 
   - **Ph.D. (2022–) | Grassland Science** <br>
@@ -44,7 +46,9 @@ At present, he mainly discusses the mechanism for the production, oxidation, tra
   - **B.S. (2015–2019) | Grassland Science** <br>
   Lanzhou University, Lanzhou, China.
   <br>
-  <br>
+
+<br>
+
 # 🏅 Fellowships & Awards
  
 <br>
