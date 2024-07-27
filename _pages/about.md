@@ -29,10 +29,11 @@ At present, he mainly discusses the mechanism for the production, oxidation, tra
   - Climate Change;
   - Methane;
   - Seasonal Freezing and Thawing.
-  
+
 <br>
 
 # 🎓 Education
+
   - **Ph.D. (2022–) | Grassland Science** <br>
   Lanzhou University, Lanzhou, China.
   <br>
@@ -47,7 +48,7 @@ At present, he mainly discusses the mechanism for the production, oxidation, tra
   <br>
 
 # 🏅 Fellowships & Awards
- 
+
 <br>
 
 # 🦾 Skills & Expertise
