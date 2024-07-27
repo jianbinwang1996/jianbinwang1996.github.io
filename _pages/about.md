@@ -33,7 +33,6 @@ At present, he mainly discusses the mechanism for the production, oxidation, tra
 <br>
 
 # 🎓 Education
-
   - **Ph.D. (2022–) | Grassland Science** <br>
   Lanzhou University, Lanzhou, China.
   <br>
