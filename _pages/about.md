@@ -55,8 +55,6 @@ At present, he mainly discusses the mechanism for the production, oxidation, tra
 <br>
 
 # 🗺️ Visitor
-<script type='text/javascript' id='clustrmaps' src='//cdn.clustrmaps.com/map_v2.js?cl=130e18&w=400&t=tt&d=STAotRI9NIsu-X78O6o_cpkmTAyIrd-xocCQeAf1V1g&co=6c9cbe&ct=fbfbf6'></script>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
