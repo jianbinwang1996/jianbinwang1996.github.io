@@ -14,7 +14,9 @@ author_profile: true
 
 <span class='anchor' id='about-me'></span>
 
-# Jianbin Wang (王健斌) <a href='https://scholar.google.com/citations?user=YXUc9QMAAAAJ'> <img src="https://img.shields.io/endpoint?url=https://img.shields.io/badge/Citations-0-blue&logo=Google%20Scholar&labelColor=f6f6f6&color=9cf&style=flat&label=Citations"> </a>
+# Jianbin Wang (王健斌) <a href='https://scholar.google.com/citations?user=YXUc9QMAAAAJ'>
+  <img src="https://img.shields.io/badge/Citations-0-blue&logo=Google%20Scholar&labelColor=f6f6f6&color=9cf&style=flat&label=Citations">
+</a>
 
 Jianbin Wang is studying at the State Key Laboratory of Herbage Improvement and Grassland Agro-ecosystems, Lanzhou University. He wants to explore the carbon cycling in wetland ecosystems on the Tibetan plateau. 
 
