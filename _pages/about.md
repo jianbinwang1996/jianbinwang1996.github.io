@@ -64,7 +64,7 @@ At present, he mainly discusses the mechanism for the production, oxidation, tra
     <style>
         .map-container {
             position: relative;
-            left: -100px; /* 向左移动 100 像素，可以根据需要调整 */
+            left: -30px; /* 向左移动 100 像素，可以根据需要调整 */
             width: fit-content; /* 根据内容自动调整宽度 */
         }
     </style>
