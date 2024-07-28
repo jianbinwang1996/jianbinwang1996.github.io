@@ -11,4 +11,6 @@ main:
   
   - title: "Services"
     url: "/services"
-    
+
+  - title: "Homepage"
+    url: "/#about-me"
