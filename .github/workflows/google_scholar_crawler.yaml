@@ -32,9 +32,12 @@ jobs:
         echo "import os" > fetch_citations.py
         echo "from scholarly import scholarly" >> fetch_citations.py
         echo "def get_citations(scholar_id):" >> fetch_citations.py
-        echo "    author = scholarly.search_author_id(scholar_id)" >> fetch_citations.py
-        echo "    if author:" >> fetch_citations.py
-        echo "        return author['citedby']" >> fetch_citations.py
+        echo "    try:" >> fetch_citations.py
+        echo "        author = scholarly.search_author_id(scholar_id)" >> fetch_citations.py
+        echo "        if author:" >> fetch_citations.py
+        echo "            return author['citedby']" >> fetch_citations.py
+        echo "    except Exception as e:" >> fetch_citations.py
+        echo "        print(f'Error fetching citations: {e}')" >> fetch_citations.py
         echo "    return 0" >> fetch_citations.py
         echo "google_scholar_id = os.getenv('GOOGLE_SCHOLAR_ID')" >> fetch_citations.py
         echo "citations = get_citations(google_scholar_id)" >> fetch_citations.py
@@ -45,14 +48,15 @@ jobs:
     - name: Create or update badge
       run: |
         citations=$(cat citations.json)
-        badge_url="https://img.shields.io/badge/Citations-${citations}-blue"
+        badge_url="https://img.shields.io/badge/Citations-${citations}-brightgreen"
         echo "::set-output name=badge_url::$badge_url"
       id: create_badge
 
     - name: Update README with badge
       run: |
         badge_url=${{ steps.create_badge.outputs.badge_url }}
-        sed -i 's|<img src="https://img.shields.io/endpoint?url=.*&logo=Google%20Scholar.*>"|<img src="'"$badge_url"'"&logo=Google%20Scholar&labelColor=f6f6f6&color=9cf&style=flat&label=Citations">|g' README.md
+        sed -i 's|<img src="https://img.shields.io/badge/Citations-[0-9]*-brightgreen">|<img src="'"$badge_url"'" alt="Google Scholar Citations">|g' README.md
+        echo "Updated README with new badge URL: $badge_url"
       if: ${{ github.ref == 'refs/heads/main' }}
 
     - name: Commit and push changes
