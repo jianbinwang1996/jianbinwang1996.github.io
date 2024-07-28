@@ -23,6 +23,9 @@ with open(f'results/gs_data_shieldsio.json', 'w') as outfile:
     json.dump(shieldio_data, outfile, ensure_ascii=False)
 
 
+
+pip install scholarly
+
 import os
 from scholarly import scholarly
 
@@ -38,3 +41,5 @@ def get_citations(scholar_id):
 google_scholar_id = 'YXUc9QMAAAAJ'  # Replace with your Google Scholar ID
 citations = get_citations(google_scholar_id)
 print(f"Citations: {citations}")
+
+python fetch_citations.py
