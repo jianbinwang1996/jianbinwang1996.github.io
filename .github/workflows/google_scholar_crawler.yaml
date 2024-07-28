@@ -1,39 +1,39 @@
 name: Google Scholar Crawler
 
 on:
-  push:
-    branches:
-      - main
+  schedule:
+    - cron: '0 * * * *'
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      GOOGLE_SCHOLAR_ID: ${{ secrets.GOOGLE_SCHOLAR_ID }}
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v2
 
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v2
       with:
         python-version: '3.10'
 
     - name: Install dependencies
       run: |
-        cd ./google_scholar_crawler
-        pip install -r requirements.txt
+        python -m pip install --upgrade pip
+        pip install scholarly
 
     - name: Check Google Scholar ID
       run: |
         echo "import os" > check_scholar_id.py
         echo "from scholarly import scholarly" >> check_scholar_id.py
-        echo "" >> check_scholar_id.py
         echo "def check_google_scholar_id(scholar_id):" >> check_scholar_id.py
         echo "    try:" >> check_scholar_id.py
         echo "        author = scholarly.search_author_id(scholar_id)" >> check_scholar_id.py
         echo "        if author:" >> check_scholar_id.py
-        echo "            print('Google Scholar ID is valid.')" >> check_scholar_id.py
+        echo "            print(f'Google Scholar ID is valid.')" >> check_scholar_id.py
         echo "            print(f'Author Name: {author['name']}')" >> check_scholar_id.py
         echo "            print(f'Affiliation: {author['affiliation']}')" >> check_scholar_id.py
         echo "        else:" >> check_scholar_id.py
@@ -44,23 +44,3 @@ jobs:
         echo "google_scholar_id = os.environ.get('GOOGLE_SCHOLAR_ID')" >> check_scholar_id.py
         echo "check_google_scholar_id(google_scholar_id)" >> check_scholar_id.py
         python3 check_scholar_id.py
-      env:
-        GOOGLE_SCHOLAR_ID: ${{ secrets.GOOGLE_SCHOLAR_ID }}
-
-    - name: Run Google Scholar Crawler
-      run: |
-        cd ./google_scholar_crawler
-        python3 main.py
-      env:
-        GOOGLE_SCHOLAR_ID: ${{ secrets.GOOGLE_SCHOLAR_ID }}
-
-    - name: Commit and push results
-      run: |
-        cd ./google_scholar_crawler/results
-        git init
-        git config --local user.name "${{ github.actor }}"
-        git config --local user.email "${{ github.actor }}@users.noreply.github.com"
-        export remote_repo="https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
-        git add *.json
-        git commit -m "Updated Citation Data"
-        git push "${remote_repo}" HEAD:google-scholar-stats --force
