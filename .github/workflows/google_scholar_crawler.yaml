@@ -2,7 +2,7 @@ name: Google Scholar Crawler
 
 on:
   schedule:
-    - cron: '0 * * * *'
+    - cron: '0 * * * *'  # 每小时运行一次
   workflow_dispatch:
 
 jobs:
@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GOOGLE_SCHOLAR_ID: ${{ secrets.GOOGLE_SCHOLAR_ID }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
     - name: Checkout repository
@@ -18,29 +19,47 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.10'
+        python-version: '3.9'
 
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install scholarly
+        pip install requests
 
-    - name: Check Google Scholar ID
+    - name: Fetch Google Scholar citations
       run: |
-        echo "import os" > check_scholar_id.py
-        echo "from scholarly import scholarly" >> check_scholar_id.py
-        echo "def check_google_scholar_id(scholar_id):" >> check_scholar_id.py
-        echo "    try:" >> check_scholar_id.py
-        echo "        author = scholarly.search_author_id(scholar_id)" >> check_scholar_id.py
-        echo "        if author:" >> check_scholar_id.py
-        echo "            print(f'Google Scholar ID is valid.')" >> check_scholar_id.py
-        echo "            print(f'Author Name: {author['name']}')" >> check_scholar_id.py
-        echo "            print(f'Affiliation: {author['affiliation']}')" >> check_scholar_id.py
-        echo "        else:" >> check_scholar_id.py
-        echo "            print('Google Scholar ID is not valid.')" >> check_scholar_id.py
-        echo "    except Exception as e:" >> check_scholar_id.py
-        echo "        print(f'An error occurred: {e}')" >> check_scholar_id.py
-        echo "" >> check_scholar_id.py
-        echo "google_scholar_id = os.environ.get('GOOGLE_SCHOLAR_ID')" >> check_scholar_id.py
-        echo "check_google_scholar_id(google_scholar_id)" >> check_scholar_id.py
-        python3 check_scholar_id.py
+        echo "import os" > fetch_citations.py
+        echo "from scholarly import scholarly" >> fetch_citations.py
+        echo "def get_citations(scholar_id):" >> fetch_citations.py
+        echo "    author = scholarly.search_author_id(scholar_id)" >> fetch_citations.py
+        echo "    if author:" >> fetch_citations.py
+        echo "        return author['citedby']" >> fetch_citations.py
+        echo "    return 0" >> fetch_citations.py
+        echo "google_scholar_id = os.getenv('GOOGLE_SCHOLAR_ID')" >> fetch_citations.py
+        echo "citations = get_citations(google_scholar_id)" >> fetch_citations.py
+        echo "with open('citations.json', 'w') as f:" >> fetch_citations.py
+        echo "    f.write(str(citations))" >> fetch_citations.py
+        python3 fetch_citations.py
+
+    - name: Create or update badge
+      run: |
+        citations=$(cat citations.json)
+        badge_url="https://img.shields.io/badge/Citations-${citations}-blue"
+        echo "::set-output name=badge_url::$badge_url"
+      id: create_badge
+
+    - name: Update README with badge
+      run: |
+        badge_url=${{ steps.create_badge.outputs.badge_url }}
+        sed -i 's|<img src="https://img.shields.io/endpoint?url=.*&logo=Google%20Scholar.*>"|<img src="'"$badge_url"'"&logo=Google%20Scholar&labelColor=f6f6f6&color=9cf&style=flat&label=Citations">|g' README.md
+      if: ${{ github.ref == 'refs/heads/main' }}
+
+    - name: Commit and push changes
+      run: |
+        git config --global user.name 'github-actions'
+        git config --global user.email 'github-actions@github.com'
+        git add README.md
+        git commit -m 'Update Google Scholar citations badge'
+        git push
+      if: ${{ github.ref == 'refs/heads/main' }}
