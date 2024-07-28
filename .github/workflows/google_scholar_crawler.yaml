@@ -1,41 +1,40 @@
 name: Get Citation Data
 
 on: 
-  page_build: 
   schedule:
-    - cron: '*/5 * * * *'  # 每5分钟运行一次
+    # Runs every 5 minutes
+    - cron:  '*/5 * * * *'
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout Repository
+    - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Set up Python 3.9
+    - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.9'
+        python-version: '3.x'
 
-    - name: Install Python dependencies
+    - name: Install dependencies
       run: |
-        pip install --upgrade pip
-        pip install -r ./google_scholar_crawler/requirements.txt
+        python -m pip install --upgrade pip
+        pip install -r google_scholar_crawler/requirements.txt
 
-    - name: Run Python script
+    - name: Run script
       run: |
-        python ./google_scholar_crawler/main.py
+        cd google_scholar_crawler
+        python main.py
 
-    - name: Push results to repository
+    - name: Commit and push changes
       run: |
-        cd ./google_scholar_crawler/results
+        cd google_scholar_crawler/results
         git init
         git config --local user.name "${GITHUB_ACTOR}"
         git config --local user.email "${GITHUB_ACTOR}@users.noreply.github.com"
-        remote_repo="https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
         git add *.json
         git commit -m "Updated Citation Data"
-        git push "${remote_repo}" HEAD:google-scholar-stats --force
-      env: 
+        git push -u "https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" HEAD:google-scholar-stats --force
+      env:
         GOOGLE_SCHOLAR_ID: ${{ secrets.GOOGLE_SCHOLAR_ID }}
