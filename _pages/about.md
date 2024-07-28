@@ -57,3 +57,26 @@ At present, he mainly discusses the mechanism for the production, oxidation, tra
 # 🗺️ Visitor
 <script type='text/javascript' id='clustrmaps' src='//cdn.clustrmaps.com/map_v2.js?cl=130e18&w=400&t=tt&d=STAotRI9NIsu-X78O6o_cpkmTAyIrd-xocCQeAf1V1g&co=6c9cbe&ct=fbfbf6'></script>
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map Example</title>
+    <style>
+        .map-container {
+            position: relative;
+            left: -100px; /* 向左移动 20 像素，可以根据需要调整 */
+            width: fit-content; /* 根据内容自动调整宽度 */
+        }
+    </style>
+</head>
+<body>
+    <h1>Visitor</h1>
+    <div class="map-container">
+        <script type='text/javascript' id='clustrmaps' src='//cdn.clustrmaps.com/map_v2.js?cl=130e18&w=400&t=tt&d=STAotRI9NIsu-X78O6o_cpkmTAyIrd-xocCQeAf1V1g&co=6c9cbe&ct=fbfbf6'></script>
+    </div>
+</body>
+</html>
+
+
