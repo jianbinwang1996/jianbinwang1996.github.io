@@ -21,3 +21,20 @@ shieldio_data = {
 }
 with open(f'results/gs_data_shieldsio.json', 'w') as outfile:
     json.dump(shieldio_data, outfile, ensure_ascii=False)
+
+
+import os
+from scholarly import scholarly
+
+def get_citations(scholar_id):
+    try:
+        author = scholarly.search_author_id(scholar_id)
+        if author:
+            return author['citedby']
+    except Exception as e:
+        print(f"Error fetching citations: {e}")
+    return 0
+
+google_scholar_id = 'YXUc9QMAAAAJ'  # Replace with your Google Scholar ID
+citations = get_citations(google_scholar_id)
+print(f"Citations: {citations}")
