@@ -1,62 +1,29 @@
-name: Google Scholar Crawler
+name: Get Citation Data
 
-on:
-  schedule:
-    - cron: '0 0 * * *' # 每天运行一次
-  workflow_dispatch: # 允许手动触发工作流
+on: 
+ page_build: 
+ schedule:
+  - cron:  '0 8 * * *'
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.10'
-
-      - name: Install dependencies
-        run: pip install scholarly
-
-      - name: Fetch Google Scholar Citations
-        run: |
-          echo "import os" > fetch_citations.py
-          echo "from scholarly import scholarly" >> fetch_citations.py
-          echo "def get_citations(scholar_id):" >> fetch_citations.py
-          echo "    try:" >> fetch_citations.py
-          echo "        author = scholarly.search_author_id(scholar_id)" >> fetch_citations.py
-          echo "        if author:" >> fetch_citations.py
-          echo "            return author['citedby']" >> fetch_citations.py
-          echo "        else:" >> fetch_citations.py
-          echo "            print(f'Google Scholar ID {scholar_id} is not valid.')" >> fetch_citations.py
-          echo "    except Exception as e:" >> fetch_citations.py
-          echo "        print(f'Error fetching citations: {e}')" >> fetch_citations.py
-          echo "    return 0" >> fetch_citations.py
-          echo "google_scholar_id = os.getenv('GOOGLE_SCHOLAR_ID')" >> fetch_citations.py
-          echo "citations = get_citations(google_scholar_id)" >> fetch_citations.py
-          echo "print(f'Citations: {citations}')" >> fetch_citations.py
-          python3 fetch_citations.py
-
-      - name: Save output to environment file
-        id: save_output
-        run: |
-          output=$(python3 fetch_citations.py)
-          echo "citations=$output" >> $GITHUB_ENV
-
-      - name: Debug output
-        run: echo "${{ env.citations }}"
-        
-      - name: Update README
-        run: |
-          citations=${{ env.citations }}
-          sed -i "s/badge\/Citations-[0-9]*[0-9]?/badge\/Citations-${citations}/" README.md
-          git config --global user.name 'github-actions'
-          git config --global user.email 'github-actions@github.com'
-          git commit -am "Update citations badge to $citations"
-          git push origin main
-
-env:
-  GOOGLE_SCHOLAR_ID: ${{ secrets.GOOGLE_SCHOLAR_ID }}
-
+    - uses: actions/checkout@v4
+    - name: Install Reqs
+      run: |
+        sudo apt-get install python3-setuptools
+    - name: Run
+      run: |
+        cd ./google_scholar_crawler
+        pip3 install -r requirements.txt
+        python3 main.py
+        cd ./results
+        git init
+        git config --local user.name "${GITHUB_ACTOR}"
+        export remote_repo="https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
+        git add *.json
+        git commit -m "Updated Citation Data"
+        git push "${remote_repo}" HEAD:google-scholar-stats --force
+      env: 
+        GOOGLE_SCHOLAR_ID: ${{ secrets.GOOGLE_SCHOLAR_ID }}
