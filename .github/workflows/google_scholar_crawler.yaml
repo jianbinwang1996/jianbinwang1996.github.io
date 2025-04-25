@@ -2,41 +2,47 @@ name: Get Citation Data
 
 on: 
   schedule:
-    - cron: '0 8 * * *'  # 每天 8 点触发
-  workflow_dispatch:  # 允许手动触发工作流
+    - cron: '0 8 * * *'
+  workflow_dispatch:  
 
 jobs:
   build:
-    runs-on: ubuntu-latest  # 使用 GitHub 提供的托管运行器
+    runs-on: ubuntu-24.04-x64  # 使用自托管的 Ubuntu 版本
 
     steps:
-    # 克隆代码库
     - name: Checkout repository
       uses: actions/checkout@v4  
 
-    # 安装依赖项
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y python3-setuptools  # 安装 setuptools
-        pip3 install -r requirements.txt  # 安装 Python 依赖
+        sudo apt-get install -y python3-setuptools
+        pip3 install -r requirements.txt  
 
-    # 运行数据抓取脚本
+    - name: Install Ruby using ruby-build
+      run: |
+        sudo apt-get install -y build-essential libssl-dev libreadline-dev zlib1g-dev
+        git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
+        ~/.rbenv/plugins/ruby-build/install.sh
+        export PATH="$HOME/.rbenv/bin:$PATH"
+        eval "$(rbenv init -)"
+        rbenv install 3.1.4  # 安装 Ruby 3.1.4
+        rbenv global 3.1.4   # 设置为默认 Ruby 版本
+    
     - name: Run data collection script
       run: |
-        cd ./google_scholar_crawler  # 切换到抓取脚本目录
-        python3 main.py  # 运行抓取脚本
+        cd ./google_scholar_crawler
+        python3 main.py  
 
-    # 提交和推送更新的数据
     - name: Commit and push changes to GitHub
       run: |
-        cd ./results  # 进入结果目录
-        git init  # 初始化 git 仓库
-        git config --local user.name "${GITHUB_ACTOR}"  # 配置 Git 用户名
-        export remote_repo="https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"  # 使用 token 进行身份验证
-        git add *.json  # 添加所有 JSON 文件
-        git commit -m "Updated Citation Data"  # 提交更改
-        git push "${remote_repo}" HEAD:google-scholar-stats --force  # 强制推送到远程仓库的指定分支
+        cd ./results
+        git init
+        git config --local user.name "${GITHUB_ACTOR}"
+        export remote_repo="https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
+        git add *.json
+        git commit -m "Updated Citation Data"
+        git push "${remote_repo}" HEAD:google-scholar-stats --force  
 
       env:
-        GOOGLE_SCHOLAR_ID: ${{ secrets.GOOGLE_SCHOLAR_ID }}  # 从 secrets 获取 Google Scholar ID
+        GOOGLE_SCHOLAR_ID: ${{ secrets.GOOGLE_SCHOLAR_ID }}
