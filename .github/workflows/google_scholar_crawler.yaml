@@ -16,27 +16,27 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.9'  # 设置 Python 版本为 3.9（根据需要修改为其他版本）
+        python-version: '3.9'  # 设置 Python 版本为 3.9
 
     - name: Install dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y python3-setuptools  # 安装 setuptools
-        pip3 install -r requirements.txt  # 安装 Python 依赖
+        pip3 install -r ./google_scholar_crawler/requirements.txt  # 更新为正确的路径
 
     - name: Run data collection script
       run: |
-        cd ./google_scholar_crawler  # 切换到指定目录
+        cd ./google_scholar_crawler
         python3 main.py  # 运行抓取脚本
 
     - name: Commit and push changes to GitHub
       run: |
-        cd ./results  # 进入结果目录
-        git init  # 初始化 git 仓库
-        git config --local user.name "${GITHUB_ACTOR}"  # 设置 git 用户名
-        export remote_repo="https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"  # 使用 token 进行推送
-        git add *.json  # 添加所有 JSON 文件
-        git commit -m "Updated Citation Data"  # 提交更改
+        cd ./results
+        git init
+        git config --local user.name "${GITHUB_ACTOR}"
+        export remote_repo="https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
+        git add *.json
+        git commit -m "Updated Citation Data"
         git push "${remote_repo}" HEAD:google-scholar-stats --force  # 强制推送到远程仓库的指定分支
 
       env:
