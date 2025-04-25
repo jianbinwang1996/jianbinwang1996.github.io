@@ -40,4 +40,4 @@ jobs:
         git push "${remote_repo}" HEAD:google-scholar-stats --force  # 强制推送到远程仓库的指定分支
 
       env:
-        GOOGLE_SCHOLAR_ID: ${{ secrets.GOOGLE_SCHOLAR_ID }}  # 从 secrets 获取 Google Scholar ID
+        GOOGLE_SCHOLAR_ID: ${YXUc9QMAAAAJ}  # 从 secrets 获取 Google Scholar ID
