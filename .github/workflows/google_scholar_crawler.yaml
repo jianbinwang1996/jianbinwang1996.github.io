@@ -4,45 +4,26 @@ on:
  page_build: 
  schedule:
   - cron:  '0 8 * * *'
-workflow_dispatch:  # 允许手动触发工作流
 
 jobs:
   build:
-    runs-on: ubuntu-24.04-x64  # 使用自托管的 Ubuntu 版本
-   - name: Checkout repository
-      uses: actions/checkout@v4  
-
-    - name: Install dependencies
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install Reqs
       run: |
-        sudo apt-get update
-        sudo apt-get install -y python3-setuptools
-        pip3 install -r requirements.txt  
-
-    - name: Install Ruby using ruby-build
-      run: |
-        # 安装 Ruby 所需依赖
-        sudo apt-get install -y build-essential libssl-dev libreadline-dev zlib1g-dev
-        git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
-        ~/.rbenv/plugins/ruby-build/install.sh
-        export PATH="$HOME/.rbenv/bin:$PATH"
-        eval "$(rbenv init -)"
-        rbenv install 3.1.4  # 安装 Ruby 3.1.4
-        rbenv global 3.1.4   # 设置为默认 Ruby 版本
-    
-    - name: Run data collection script
+        sudo apt-get install python3-setuptools
+    - name: Run
       run: |
         cd ./google_scholar_crawler
-        python3 main.py  
-
-    - name: Commit and push changes to GitHub
-      run: |
+        pip3 install -r requirements.txt
+        python3 main.py
         cd ./results
         git init
         git config --local user.name "${GITHUB_ACTOR}"
         export remote_repo="https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
         git add *.json
         git commit -m "Updated Citation Data"
-        git push "${remote_repo}" HEAD:google-scholar-stats --force  
-
-      env:
+        git push "${remote_repo}" HEAD:google-scholar-stats --force
+      env: 
         GOOGLE_SCHOLAR_ID: ${{ secrets.GOOGLE_SCHOLAR_ID }}
