@@ -4,6 +4,7 @@ on:
  page_build: 
  schedule:
   - cron:  '0 8 * * *'
+  workflow_dispatch:  # 允许手动触发工作流
 
 jobs:
   build:
